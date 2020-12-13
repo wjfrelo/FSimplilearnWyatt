@@ -1,0 +1,28 @@
+Git Taggin:
+
+# List tags:
+git tag
+
+# Get tag related info
+git show <tag.name>
+
+# Create Annotated tag
+git tag -a v1.4 -m "my version 1.4"
+
+# Create tag without annotation
+git tag v1.4-lw
+
+# Create tag after the fact for commit
+git tag -a v1.2 9fceb02
+
+# Tags must be explicitly pushed
+git push origin v1.5 or git push origin  --tags
+
+# Delete tags
+git tag -d <tag.name>
+
+# Checkout specific tag
+git checkout <tag.name>>
+
+# Switch and  create new branch
+git switch -c <new.branch.name>
