@@ -1,0 +1,25 @@
+Code Coverage:
+
+Both Clover & Cobertura supports only runtime instrumentation, whereas JaCoCo supports both compile time and runtime instrumentation.
+- Run time instrumentation: you can get coverage report only until the point JVM is running. Once it’s restarted and if you run additional tests,
+  you will be able to get only new coverage report and not the cumulative report of the tests that were conducted before the restart.
+  In large enterprises there would be unit tests, functional tests, regression tests, smoke tests…. each would be owned by different teams.
+- If I want to get a cumulative code coverage report, compile time instrumentation is the easier way to achieve it.
+
+Shift-Left Operations
+
+https://www.bmc.com/blogs/what-is-shift-left-shift-left-testing-explained/#:~:text=Shift%20Left%20is%20a%20practice,in%20the%20software%20development%20process.
+- Shift Left is a practice intended to find and prevent defects early in the software delivery process. The idea is to improve quality by moving
+  tasks to the left as early in the lifecycle as possible. Shift Left testing means testing earlier in the software development process.
+- In the traditional software development model, requirements are kept on the left side of the plan, and the delivery and testing requirements on the right.
+  The problem is that these practices can’t handle changing expectations and requirements, resulting in negative outcomes for the business such as:
+  - Increased costs
+  - Increased time to market
+  - Unexpected errors
+  - Cost alone is a very strong incentive for shifting your testing to the left. Estimates indicate that over half of all software defects could be identified
+    during the requirements phase, with less than 10% emerging during the development phase of the lifecycle. The cost of resolving these defects works in reverse:
+
+
+Maven Clover Commands:
+https://openclover.org/doc/manual/4.2.0/maven--basic-usage.html
+mvn install -Dmaven.test.failure.ignore=true clover:instrument clover:aggregate -N clover:instrument clover:clover

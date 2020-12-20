@@ -1,4 +1,9 @@
-Git Taggin:
+Git Tagging:
+
+Great Information:
+- Tag Schemes:https://semver.org/
+- Cron Tab info: https://crontab.guru/every-minute
+- Docker Info: https://hub.docker.com/_/jenkins
 
 # List tags:
 git tag
@@ -7,16 +12,16 @@ git tag
 git show <tag.name>
 
 # Create Annotated tag
-git tag -a v1.4 -m "my version 1.4"
+git tag -a <tag.name> -m "my version 1.4"
 
 # Create tag without annotation
-git tag v1.4-lw
+git tag <tag.name>
 
 # Create tag after the fact for commit
-git tag -a v1.2 9fceb02
+git tag -a <tag.name> <commit.number>
 
 # Tags must be explicitly pushed
-git push origin v1.5 or git push origin  --tags
+git push origin <tag.name> or git push origin  --tags
 
 # Delete tags
 git tag -d <tag.name>
