@@ -1,8 +1,17 @@
-# https://stackoverflow.com/questions/184563/checkstyle-vs-pmd
+https://stackoverflow.com/questions/184563/checkstyle-vs-pmd
 http://findbugs.sourceforge.net/
 
 # cross-language static code analyzer.
 https://pmd.github.io/
 # https://pmd.github.io/latest/pmd_projectdocs_trivia_meaning.html
+
+A quote by Jason Hathorne:
+"I prefer Sonarqube as it is language agnostic.  You just need to add the sonar-scanner
+to collect the test output and it will push it to the Sonarqube scanner.  Sonarqube will
+make the analysis and will trigger the stop gate via the sonar-scanner.  I have used it for
+.Net, .NetCore, JavaScript and Python projects.  JavaScript has its own sonar-scanner.js you
+add as a dev dependency.  .Net and Python have scanners you can add to the project, or if you
+are building in docker select a docker image from docker hub with the sonar-scanner included
+so you only need a sonar-scanner.properties file."
 
 

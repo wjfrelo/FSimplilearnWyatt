@@ -1,4 +1,4 @@
-import org.junit.After;
+import or.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -45,3 +45,4 @@ public class JenkinsJunitDemo
         Assert.assertTrue(driver.findElement(By.xpath("//form[@id='ignored case']")).isDisplayed());
     }
 }
+

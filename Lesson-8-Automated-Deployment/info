@@ -1,0 +1,22 @@
+#------------------------
+# Exercise 8.1 to install virtual env
+  sudo pip install virtualenv
+#------------------------
+
+
+# Shell code
+-------------------------
+PYENV_HOME=$WORKSPACE/python-job
+if [ -d $PYENV_HOME ]; then
+   rm -rf $PYENV_HOME
+fi
+# Create venv environment
+python -m virtualenv $PYENV_HOME
+# Activate venv environment
+
+. $PYENV_HOME/bin/activate
+
+# Install dependencies
+mkdir $PYENV_HOME/envs
+echo -e "nose\nbeautifulsoup4" >> $PYENV_HOME/envs/requirements.txt
+pip install -r $PYENV_HOME/envs/requirements.txt
