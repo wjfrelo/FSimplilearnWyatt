@@ -21,5 +21,5 @@ https://www.bmc.com/blogs/what-is-shift-left-shift-left-testing-explained/#:~:te
 
 
 Maven Clover Commands:
-https://openclover.org/doc/manual/4.2.0/maven--basic-usage.html
+#https://openclover.org/doc/manual/4.2.0/maven--basic-usage.html
 mvn install -Dmaven.test.failure.ignore=true clover:instrument clover:aggregate -N clover:instrument clover:clover
