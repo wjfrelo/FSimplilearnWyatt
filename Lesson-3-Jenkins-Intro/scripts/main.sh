@@ -21,10 +21,7 @@ function configure-exercise-environment {
   sudo apt update -y
   sudo apt install jenkins -y
   sudo /etc/init.d/jenkins start
-
 }
-
-
 
 function print-key-information{
   echo 'hello'
@@ -41,9 +38,3 @@ function verify {
   echo "JAVA-HOME: /usr/lib/jvm/java-8-openjdk-amd64"
  # Verify git
 }
-
-configure-exercise-environment "$1"
-
-verify
-
-# Cron 0 11,22 * * *
