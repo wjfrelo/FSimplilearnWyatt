@@ -37,11 +37,4 @@ resource "aws_instance" "web" {
   tags = {
     Name = "HelloWorld"
   }
-
-  provisioner "remote-exec" {
-    connection {
-      user = "ubuntu"
-
-    }
-  }
 }

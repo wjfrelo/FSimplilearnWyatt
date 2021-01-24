@@ -1,0 +1,116 @@
+
+Github URL for Labs: https://github.com/wjfrelo/FSimplilearnWyatt
+Git LFS: https://git-lfs.github.com/
+
+Splitting a subnet: https://www.davidc.net/sites/default/subnets/subnets.html
+
+
+Steps for Exercise:
+1. start an Ubuntu Server 18.04 LTS (HVM), t2.large ec2 instance
+2. when configuring the instance, change the "Auto-assign Public IP" to enable (contiue)
+3. Change the "Size (GiB)" from 8Gb to 20Gb
+4. Get the Public DNS Address:
+5. Windows user: Convert downloaded PEM Key to PPK using PuttyGen and Use PuTTy or Terminal to get ssh into node: (Example) ssh -i <pathToDownlodedPem> ubuntu@<Public DNS Address>
+6. make a new instance ---> search 18.04 (should say free tier) --> t2.micro ---> Enable Auto Assign Public IP --> 20GB for storage instead of 8 ---> Skip add tags ---> Create new security group and change source for ssh to my ip ---> review and launch ---> create a new key
+7.
+
+Link for EC2 connection to Putty:
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/putty.html
+
+#----------------------------
+# Sunday January 24,
+#----------------------------
+
+# Info
+https://www.terraform.io/
+https://maven.apache.org/plugins/index.html
+
+# Install Terraform
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+sudo apt-get update
+sudo apt-get install terraform
+
+# Install AWS CLI
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Create AWS User and Access Credentials
+
+1. Create AWS User using IAM (Provide only programmatic acceess)
+2. Attach Existing Policies (Full Administrator)
+
+# Setup AWS Credentials
+run command--> sudo aws configure --profile student
+--Ask for Access Key:     <paste access key>
+--Ask for Secret ID/Key:  <paste secret key>
+--Ask for the Region:     <get and paste region from AWS UI--upper-right corner>
+--Ask for the output.     <type "json">
+
+Action: Creates files in ~/.aws/config & ~/.aws/credentials
+-- cat ~/.aws/config (view file)
+-- cat ~/.aws/credentials (view file)
+
+[default]
+
+region
+
+[student]
+region
+
+# Create terraform files
+mkdir aws-terraform
+touch aws-terraform/main.tf
+touch aws-terraform/variables.tf
+touch aws-terraform/output.tf
+cd aws-terraform
+
+#-------------------------
+# Add Terraform content
+#-------------------------
+
+terraform {
+required_providers {
+aws = {
+source = "hashicorp/aws"
+version = "~> 3.22.0"
+}
+}
+}
+
+provider "aws" {
+region = "us-east-1"
+shared_credentials_file = "~/.aws/credentials"
+profile = "student"
+}
+
+data "aws_ami" "ubuntu" {
+most_recent = true
+
+filter {
+name   = "name"
+values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+}
+
+filter {
+name   = "virtualization-type"
+values = ["hvm"]
+}
+
+owners = ["099720109477"] # Canonical
+}
+
+resource "aws_instance" "web" {
+ami           = data.aws_ami.ubuntu.id
+instance_type = "t2.small"
+key_name      = "wyatts-keypair"
+
+tags = {
+Name = "HelloWorld"
+}
+
+}
+
+# Continue the following actions:
+terraform init
