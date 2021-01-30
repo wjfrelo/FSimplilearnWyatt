@@ -9,8 +9,21 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-  shared_credentials_file = "~/.aws/credentials"
-  profile = "student"
+  access_key = aws_iam_access_key.create.id
+  secret_key = aws_iam_access_key.create.secret
+}
+
+resource "aws_iam_user" "create" {
+  name = "student"
+  path = "/user/"
+
+  tags = {
+    tag-key = "USER"
+  }
+}
+
+resource "aws_iam_access_key" "create" {
+  user = aws_iam_user.create.name
 }
 
 
@@ -84,8 +97,8 @@ resource "aws_instance" "jenkins" {
       "sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'",
       "sudo apt install jenkins",
       "systemctl status jenkins",
-      "sudo /etc/init.d/jenkins start"
-      "sudo update install maven "
+      "sudo /etc/init.d/jenkins start",
+      "sudo update install maven"
     ]
   }
 }

@@ -53,10 +53,10 @@ function create-terraform-instance-structure {
   cd aws-terraform
 }
 
-function install awscli {
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  unzip awscliv2.zip
-  sudo ./aws/install
-}
+#function install awscli {
+#  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+#  unzip awscliv2.zip
+#  sudo ./aws/install
+#}
 
 https://www.surveymonkey.com/r/YKY5HMX?session_id=1709478983&type=PGP&trainer=wyatt%20frelot&course=&mega_category=&id=&mega_id=
