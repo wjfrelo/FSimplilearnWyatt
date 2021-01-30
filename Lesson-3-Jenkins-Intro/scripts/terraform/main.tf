@@ -72,23 +72,31 @@ resource "aws_security_group" "set-sg" {
 
 
 resource "aws_instance" "jenkins" {
-  ami           = data.aws_ami.ubuntu.id
+  ami = data.aws_ami.ubuntu.id
   instance_type = "t2.small"
-  key_name      = aws_key_pair.deployer.key_name
-  security_groups = [aws_security_group.set-sg.name]
+  key_name = aws_key_pair.deployer.key_name
+  security_groups = [
+    aws_security_group.set-sg.name]
   tags = {
     Name = "Jenkins Instance"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -",
-      "sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'",
-      "sudo apt install jenkins",
-      "systemctl status jenkins",
-      "sudo /etc/init.d/jenkins start",
-      "sudo update install maven"
-    ]
-  }
+//  provisioner "remote-exec" {
+//    connection {
+//      type = "ssh"
+//      user = "ubuntu"
+//      host = self.public_dns
+//      private_key = file("~/.ssh/id_rsa")
+//    }
+//    inline = [
+//      "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -",
+//      "sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'",
+//      "sudo apt install jenkins",
+//      "systemctl status jenkins",
+//      "sudo /etc/init.d/jenkins start",
+//      "sudo update install maven"
+//    ]
+//  }
 }
+
 
