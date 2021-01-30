@@ -14,9 +14,13 @@ provider "aws" {
 }
 
 # Nice easy way to set custom variable that has your ip_address
-data http ip_address {
-  url             = var.get_address_url
-  request_headers = var.get_address_request_headers
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key"
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 # Get Amazon Machine Image id for ubuntu AMI. Used to run EC2 Instances
@@ -51,8 +55,7 @@ resource "aws_security_group" "set-sg" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = [
-      data.http.ip_address/32]
+    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
   }
 
   egress {
@@ -71,8 +74,8 @@ resource "aws_security_group" "set-sg" {
 resource "aws_instance" "jenkins" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.small"
-  key_name      = "wyatts-keypair"
-  security_groups = aws_security_group.set-sg.id
+  key_name      = aws_key_pair.deployer.key_name
+  security_groups = [aws_security_group.set-sg.name]
   tags = {
     Name = "Jenkins Instance"
   }
