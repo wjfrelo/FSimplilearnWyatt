@@ -7,25 +7,11 @@ terraform {
   }
 }
 
+# Ensure IAM user is created, programmatic access provided (access ke and secret key) and AWS configuration completed (aws configure)
 provider "aws" {
-  region = "us-east-1"
-  access_key = aws_iam_access_key.create.id
-  secret_key = aws_iam_access_key.create.secret
+  profile = "student"
+  shared_credentials_file = "~/.aws/credentials"
 }
-
-resource "aws_iam_user" "create" {
-  name = "student"
-  path = "/user/"
-
-  tags = {
-    tag-key = "USER"
-  }
-}
-
-resource "aws_iam_access_key" "create" {
-  user = aws_iam_user.create.name
-}
-
 
 # Nice easy way to set custom variable that has your ip_address
 data http ip_address {
