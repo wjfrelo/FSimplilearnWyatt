@@ -1,0 +1,62 @@
+Types of pipeline scrips:
+- declarative
+- scriptives
+Both can use groovy to be written, with the following rules:
+    - Top line of declaritve MUST be "pipeline".
+    - No ";" to separate statements
+    - Top level blocks an only consist of Directives, Steps, or assignment statements
+       More info: https://www.jenkins.io/doc/book/pipeline/syntax/
+        - Sections:   contain one or more directives or steps. Types includes: stages, agent, and post
+           1. agent section
+              (top-level) Specifies where the entire Pipeline, or a specific stage, will execute
+              (stage-level) Declared within a stage controlls where the stage executes
+              Typical options include dockerfile, kubernetes, etc...
+                  - Example 1:
+                        agent {
+                            kubernetes {
+                                label podlabel
+                                yaml """
+                        kind: Pod
+                        metadata:
+                        ....kubernetes jobs config
+                        }
+                        }
+                  - Example 2:
+                        agent {
+                        # Follows dockerfile syntax generally except the bottom two
+                            dockerfile {
+                                filename 'Dockerfile.build'
+                                dir 'build'
+                                label 'my-defined-label'
+                                registryUrl 'https://myregistry.com/'
+                                registryCredentialsId 'myPredefinedCredentialsInJenkins'
+                            }
+                  - Example 3:
+                        agent {
+                            node {
+                                label 'my-defined-label'
+                                customWorkspace '/some/other/path' -->Adds relateive path to jenkins workspace for local files (stash setting )
+                            }
+                        }
+        - Directives: Contains additional information like stage specific variables, credentials, and can be used at the top-level and stage-level. Directive
+                      types include: environment (variables), options (pipeline config), parameters (identifies trigger specific property variables),
+                      triggers(defines the automated ways in which the Pipeline should be re-triggered)
+        - Steps:
+    - A property reference statement is treated as a no-argument (i.e., no input) method invocation
+
+# Declare the pipeline first:
+pipeline { <add script }
+
+# Add the sections
+pipeline {
+    agent any or {specific label}
+    stages {
+        stage{
+            steps {
+                sh "mvn compile" # step 1
+                echo "Im done"   # step 2
+            }
+        }
+    }
+    # add other sections mentioned above
+}

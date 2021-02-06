@@ -1,0 +1,14 @@
+- Discard Old Builds:                                         self explanatory
+- Do not allow concurrent builds:                             self explanatory
+- Do not allow the pipeline to resume if the master restarts: self explanatory
+- Github project:                                             self explanatory
+- Pipeline speed/durability override:                         By default data is persisted to disk in the event of picking where
+                                                              left off. If this is selected, it is less likely that the job
+                                                              will be able to pick-up if pipeline is restarted. Benefits are
+                                                              more performance based.
+- Preserve stashes from completed builds:                     Like a cache. Holds files of inputs and outpute that are used throughout
+                                                              the build and goes away once pipeline is completed.
+                                                              When checked, preserves "cache" to disk for reuse across runs.
+- This project is parameterized:
+- Throttle builds:                                            Enforces minimum time between builds. Typically done one eternal resources
+                                                              needs time to prepare.

@@ -1,0 +1,11 @@
+stash- Saves a set of files for later use on any node/workspace in the same Pipeline run. By default,
+        stashed files are discarded at the end of a pipeline run. Other plugins may change this behavior
+        to preserve stashes for longer. For example, Declarative Pipeline includes a preserveStashes() option
+        to allow stashes from a run to be retained and used if that run is restarted.
+        Stashes from one Pipeline run are not available in other runs, other Pipelines, or other jobs. If you want
+        to persist artifacts for use outside of a single run, consider using archiveArtifacts instead. Note that
+        the stash and unstash steps are designed for use with small files. For large data transfers, use
+        the External Workspace Manager plugin, or use an external repository manager such as Nexus or Artifactory.
+        This is because stashed files are archived in a compressed TAR, and with large files this demands considerable
+        on-master resources, particularly CPU time. There's not a hard stash size limit, but between 5-100 MB you
+        should probably consider alternatives.
