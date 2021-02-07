@@ -6,7 +6,7 @@ pipeline {
 	stages {
     	stage("Checkout") {
         	steps {
-        	    git branch: 'main,
+        	    git branch: 'main',
                     credentialsId: '<add your key name>',
                     url: '<add your ssh git address here>'
         	}

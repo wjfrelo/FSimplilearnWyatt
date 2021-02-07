@@ -67,9 +67,18 @@ public class JenkinsDemo
     @Test
     public void testCaseIgnored()
     {
-        Assert.assertTrue(driver.findElement(By.xpath("//form[@id='ignored case']")).isDisplayed());
+        Assert.assertTrue(Hello.hello)
+        #Assert.assertTrue(driver.findElement(By.xpath("//form[@id='ignored case']")).isDisplayed());
     }
 }
 
-# Configure job
+# Run the following command on Linux To see what is returning:
+## -L follow redirects
+curl -L facebook.com >> forms
+vi forms # Opens vi editor
+
+
+
+
+
 

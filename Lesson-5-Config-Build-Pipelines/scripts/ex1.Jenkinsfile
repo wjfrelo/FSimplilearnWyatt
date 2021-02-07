@@ -25,11 +25,13 @@ pipeline {
     }
     stages {
         stage('First Stage') {
+                agent {label}
                 steps {
                     echo 'Hello World'
                 }
         }
         stage('Second Stage') {
+                agent {label}
                 steps {
                     echo 'Hello Again'
                     echo 'A third time Hello'
