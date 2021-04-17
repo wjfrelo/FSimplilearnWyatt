@@ -1,0 +1,196 @@
+#----------------------------------------
+# Setup AWS Node Using Terraform
+# Time: 10min
+# Goal: To shortcut the creation of a AWS instance
+#----------------------------------------
+
+
+#----------------------------------------
+# ToDo 1: INSTALL TERRAFORM UBUNTU
+#----------------------------------------
+
+
+
+unzip terraform_0.15.0_linux_amd64.zip 
+sudo mv terraform /usr/bin/terraform
+
+
+#----------------------------------------
+# ToDo 2: INSTALL AND CONFIGURE AWS CLI
+#----------------------------------------
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# ToDo 2A: Create AWS Credentials directory
+#####################################
+
+[ -d "~/.aws" ] && echo "AWS Configuration directory already exists." || mkdir -p ~/.aws/ && echo "Created ~/.aws directory."
+
+
+# ToDo 2B: Create AWS CLI Credential file from Practice Labs AWS in LMS (AWS API ACCESS)
+#####################################
+
+cat << EOF >> ~/.aws/credentials
+[default]
+aws_access_key_id = <REPLACE ACCESS_KEY>                               
+aws_secret_access_key = <REPLACE SECRET_KEY>
+aws_session_token = <REPLACE SESSION_TOKEN >
+EOF
+
+# ToDo 2C: Create AWS CLI Configuration file from student AWS Region. Normally it is "us-east-1" and can be seen in 
+#          upper-right corner of AWS screen once logged in
+#####################################
+
+cat << EOF >> ~/.aws/config
+[default]
+region=us-east-1
+output=json
+EOF
+
+
+#----------------------------------------
+# ToDo 3: CREATE TERRAFORM DIRECTORY MODULE STRUCTURE
+#----------------------------------------
+
+# ToDo 3A: Create work directory
+#####################################
+
+mkdir ~/create-aws-node-terraform
+
+
+# ToDo 3B: Create main.tf
+#####################################
+
+vi ~/create-aws-node-terraform/main.tf
+
+# Copy and paste contents from line 71 - 116
+
+provider "aws" {
+  shared_credentials_file = "~/.aws/credentials"
+  profile                 = "default"
+  region                  = "us-east-1"
+}
+
+
+resource "tls_private_key" "private-key" {
+  algorithm   = "RSA"
+  rsa_bits    = 2048
+}
+
+
+resource "aws_key_pair" "deployer" {
+  key_name   = "${terraform.workspace}.deployer-key"
+  public_key = tls_private_key.private-key.public_key_openssh
+}
+
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
+
+resource "aws_security_group" "student-sg" {
+  name = "Hello-World-SG"
+  description = "Student security group
+
+  tags = {
+    Name = var.tagName
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_security_group_rule" "create-sg" {
+  type              = var.type
+  from_port         = var.from-port
+  to_port           = var.to-port
+  protocol          = var.protocol
+  cidr_blocks       = length(var.cidrblocks) == 0 ? null : var.cidrblocks
+  self              = var.self == false ? null : true
+  security_group_id = var.security-group-id
+}
+
+resource "aws_security_group_rule" "create-sgr-ssh" {
+  security-group-id = aws_security_group.create-sg.id
+  cidrblocks         = ["0.0.0.0/0"]
+  from-port         = 22
+  protocol          = "tcp"
+  to-port           = 22
+  type              = "ingress"
+  self              = false
+}
+
+resource "aws_instance" "web" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t2.micro"
+  key_name      = aws_key_pair.deployer.key_name
+  security_groups = [aws_security_group.create-sg.id]
+  tags = {
+    Name = "HelloWorld"
+  }
+ 
+  provisioner "remote-exec {
+    connection {
+      host = self.public_ip
+      user = "ec2-user"
+      type = "ssh"
+      private_key = tls_private_key.private-key.private_key_pem
+    }
+    inline = [
+    
+    ]
+  }
+
+  provisioner "local-exec" {
+    command = "terraform output private-key | sed '1d' | sed '28d' > ~/.ssh/student.pem; chmod 600 ~/.ssh/student.pem"
+  }
+}
+
+
+# ToDo 3C: Create variables.tf
+#####################################
+
+cat << EOF >> ~/create-aws-node-terraform/variables.tf
+# LEAVE EMPTY
+EOF
+
+# ToDo 3D: Create output.tf
+#####################################
+
+
+cat << EOF >> ~/create-aws-node-terraform/output.tf
+output "private-key" {
+  value = tls_private_key.private-key.private_key_pem
+  sensitive = true
+}
+
+output "public_key_openssh" {
+  value = tls_private_key.private-key.public_key_openssh
+}
+EOF
+
+
+# ToDo 4: Initialize Terraform
+##########################################
+
+cd ~/create-aws-node-terraform/ && terraform init
+terraform plan
+terraform apply
+
+# ToDo 5: Log into AWS Instance
+# For example: http://ec2-52-91-125-157.compute-1.amazonaws.com
+
+ssh -i ~/.ssh/student.pem ubuntu@ec2-52-91-125-157.compute-1.amazonaws.com
